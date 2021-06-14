@@ -14,16 +14,16 @@ import (
 )
 
 type KeyValue struct {
-	Key string
+	Key   string
 	Value int
 }
 
 type StringFloat struct {
-	Str string
+	Str   string
 	Value float64
 }
 
-func GetAgeOfEachPeople(dateString string) (result int){
+func GetAgeOfEachPeople(dateString string) (result int) {
 	var dateSlice = strings.Split(dateString, "-")
 	year, _ := strconv.Atoi(dateSlice[0])
 	monthInt, _ := strconv.Atoi(dateSlice[1])
@@ -41,7 +41,7 @@ func GetAgeOfEachPeople(dateString string) (result int){
 	return age
 }
 
-func AverageOfAge(users []model.User) (result float64){
+func AverageOfAge(users []model.User) (result float64) {
 
 	sum := 0
 	count := len(users)
@@ -56,7 +56,7 @@ func AverageOfAge(users []model.User) (result float64){
 	return result
 }
 
-func AverageOfSalary(users []model.User) (result float64){
+func AverageOfSalary(users []model.User) (result float64) {
 	sum := 0
 	count := len(users)
 	for _, user := range users {
@@ -70,7 +70,7 @@ func AverageOfSalary(users []model.User) (result float64){
 	return result
 }
 
-func GetPeopleIsADeveloper(users []model.User) (result []model.User){
+func GetPeopleIsADeveloper(users []model.User) (result []model.User) {
 	for _, user := range users {
 		if user.Job == "developer" {
 			result = append(result, user)
@@ -79,21 +79,21 @@ func GetPeopleIsADeveloper(users []model.User) (result []model.User){
 	return result
 }
 
-func ConvertMapToSliceFloatAndSort(myMap map[string]float64)(result []StringFloat){
+func ConvertMapToSliceFloatAndSort(myMap map[string]float64) (result []StringFloat) {
 	for key, val := range myMap {
 		result = append(result, StringFloat{key, val})
 	}
-	sort.Slice(result, func(i, j int) bool{
+	sort.Slice(result, func(i, j int) bool {
 		return result[i].Value > result[j].Value
 	})
 	return result
 }
 
-func ConvertMapToSliceAndSort(myMap map[string]int)(result []KeyValue){
+func ConvertMapToSliceAndSort(myMap map[string]int) (result []KeyValue) {
 	for key, val := range myMap {
 		result = append(result, KeyValue{key, val})
 	}
-	sort.Slice(result, func(i, j int) bool{
+	sort.Slice(result, func(i, j int) bool {
 		return result[i].Value > result[j].Value
 	})
 	return result
@@ -108,7 +108,7 @@ func Contains(Str []string, e string) bool {
 	return false
 }
 
-func GetNameOfCities(users []model.User) (result []string){
+func GetNameOfCities(users []model.User) (result []string) {
 	for _, user := range users {
 		if !Contains(result, user.City) {
 			result = append(result, user.City)
@@ -117,7 +117,7 @@ func GetNameOfCities(users []model.User) (result []string){
 	return result
 }
 
-func GetNameOfJobs(users []model.User) (result []string){
+func GetNameOfJobs(users []model.User) (result []string) {
 	for _, user := range users {
 		if !Contains(result, user.Job) {
 			result = append(result, user.Job)
@@ -126,7 +126,7 @@ func GetNameOfJobs(users []model.User) (result []string){
 	return result
 }
 
-func GetHottestJob(users []model.User) (result []KeyValue){
+func GetHottestJob(users []model.User) (result []KeyValue) {
 	var userJobMap = GroupPeopleByJob(users)
 	var sliceConv = ConvertMapToSliceAndSort(userJobMap)
 	var max = sliceConv[0].Value
@@ -138,7 +138,7 @@ func GetHottestJob(users []model.User) (result []KeyValue){
 	return result
 }
 
-func GroupPeopleByCity(users []model.User) (result map[string][]model.User){
+func GroupPeopleByCity(users []model.User) (result map[string][]model.User) {
 	result = make(map[string][]model.User)
 	for _, user := range users {
 		result[user.City] = append(result[user.City], user)
@@ -146,7 +146,7 @@ func GroupPeopleByCity(users []model.User) (result map[string][]model.User){
 	return result
 }
 
-func GetGroupOfPeoPleByJob(users []model.User) (result map[string][]model.User){
+func GetGroupOfPeoPleByJob(users []model.User) (result map[string][]model.User) {
 	result = make(map[string][]model.User)
 	for _, user := range users {
 		result[user.Job] = append(result[user.Job], user)
@@ -164,26 +164,17 @@ func GroupPeopleByJob(users []model.User) (result map[string]int) {
 
 func Top5JobsByNumber(users []model.User) (result []KeyValue) {
 	var userJobMap = GroupPeopleByJob(users)
-	var sliceConv = ConvertMapToSliceAndSort(userJobMap)
-
-	for i:= 0; i<5; i++ {
-		result = append(result, sliceConv[i])
-	}
-	return result
+	result = ConvertMapToSliceAndSort(userJobMap)
+	return result[0:5]
 }
 
-func Top5CitiesByNumber(users []model.User) (result []KeyValue){
+func Top5CitiesByNumber(users []model.User) (result []KeyValue) {
 	cityCountMap := make(map[string]int)
 	for _, user := range users {
 		cityCountMap[user.City]++
 	}
-
-	var sliceConv = ConvertMapToSliceAndSort(cityCountMap)
-
-	for i:= 0; i<5; i++ {
-		result = append(result, sliceConv[i])
-	}
-	return result
+	result = ConvertMapToSliceAndSort(cityCountMap)
+	return result[0:5]
 }
 
 func TopJobByNumberInEachCity(users []model.User) (result map[string][]KeyValue) {
@@ -191,7 +182,7 @@ func TopJobByNumberInEachCity(users []model.User) (result map[string][]KeyValue)
 	var userSameCityMap = GroupPeopleByCity(users)
 	var nameOfCitySlice = GetNameOfCities(users)
 	var hottestJob []KeyValue
-	for i := 0; i < len(nameOfCitySlice) ; i++ {
+	for i := 0; i < len(nameOfCitySlice); i++ {
 		hottestJob = GetHottestJob(userSameCityMap[nameOfCitySlice[i]])
 		for _, hot := range hottestJob {
 			result[nameOfCitySlice[i]] = append(result[nameOfCitySlice[i]], hot)
@@ -200,7 +191,7 @@ func TopJobByNumberInEachCity(users []model.User) (result map[string][]KeyValue)
 	return result
 }
 
-func AverageSalaryByJob(users []model.User) (result map[string]float64){
+func AverageSalaryByJob(users []model.User) (result map[string]float64) {
 	result = make(map[string]float64)
 	var usersInSameJob = GetGroupOfPeoPleByJob(users)
 	var jobNames = GetNameOfJobs(users)
@@ -218,14 +209,8 @@ func FiveCitiesHasTopAverageSalary(users []model.User) (result []StringFloat) {
 	for _, city := range nameOfCity {
 		mapCityAverageSalary[city] = AverageOfSalary(userInSameCity[city])
 	}
-
-	var sliceConv = ConvertMapToSliceFloatAndSort(mapCityAverageSalary)
-
-	for i:= 0; i<5; i++ {
-		result = append(result, sliceConv[i])
-	}
-
-	return result
+	result = ConvertMapToSliceFloatAndSort(mapCityAverageSalary)
+	return result[0:5]
 }
 
 func FiveCitiesHasTopSalaryForDeveloper(users []model.User) (result []StringFloat) {
@@ -238,17 +223,11 @@ func FiveCitiesHasTopSalaryForDeveloper(users []model.User) (result []StringFloa
 		var devInCity = GetPeopleIsADeveloper(usersInCity)
 		mapCityAverageSalary[city] = AverageOfSalary(devInCity)
 	}
-
-	var sliceConv = ConvertMapToSliceFloatAndSort(mapCityAverageSalary)
-
-	for i:= 0; i<5; i++ {
-		result = append(result, sliceConv[i])
-	}
-
-	return result
+	result = ConvertMapToSliceFloatAndSort(mapCityAverageSalary)
+	return result[0:5]
 }
 
-func AverageAgePerJob(users []model.User) (result map[string]float64){
+func AverageAgePerJob(users []model.User) (result map[string]float64) {
 	result = make(map[string]float64)
 	var usersInSameJob = GetGroupOfPeoPleByJob(users)
 	var jobs = GetNameOfJobs(users)
@@ -259,7 +238,7 @@ func AverageAgePerJob(users []model.User) (result map[string]float64){
 	return result
 }
 
-func AverageAgePerCity(users []model.User) (result map[string]float64){
+func AverageAgePerCity(users []model.User) (result map[string]float64) {
 	result = make(map[string]float64)
 	var usersInSameCity = GroupPeopleByCity(users)
 	var cities = GetNameOfCities(users)
@@ -269,7 +248,6 @@ func AverageAgePerCity(users []model.User) (result map[string]float64){
 	}
 	return result
 }
-
 
 func main() {
 	jsonFile, err := os.Open("person.json")
@@ -286,37 +264,43 @@ func main() {
 
 	json.Unmarshal(byteValue, &users)
 
-	//for i := 0; i < 5; i++ {
-	//	fmt.Println(users[i])
-	//}
-
 	//2.1. get people in same city
+	fmt.Println("2.1. get people in same city")
 	fmt.Println(GroupPeopleByCity(users))
 
 	//2.2. count people have same job
+	fmt.Println("2.2. count people have same job")
 	fmt.Println(GroupPeopleByJob(users))
 
 	//2.3. 5 hot jobs
+	fmt.Println("2.3. 5 hot jobs")
 	fmt.Println(Top5JobsByNumber(users))
 
 	//2.4 5 big cities
+	fmt.Println("2.4 5 big cities")
 	fmt.Println(Top5CitiesByNumber(users))
 
-	//2.5 Hottest in the city
+	//2.5 Hottest job in the city
+	fmt.Println("2.5 Hottest job in the city")
 	fmt.Println(TopJobByNumberInEachCity(users))
 
 	//2.6 Average of Salary
+	fmt.Println("2.6 Average of Salary")
 	fmt.Println(AverageSalaryByJob(users))
 
 	//2.7 5 cities has highest salary
+	fmt.Println("2.7 5 cities has highest salary")
 	fmt.Println(FiveCitiesHasTopAverageSalary(users))
 
 	//2.8 5 cities has highest salary for developer
+	fmt.Println("2.8 5 cities has highest salary for developer")
 	fmt.Println(FiveCitiesHasTopSalaryForDeveloper(users))
 
 	//2.9 Average of age by each job
+	fmt.Println("2.9 Average of age by each job")
 	fmt.Println(AverageAgePerJob(users))
 
 	//2.10 Average of age in each city
+	fmt.Println("2.10 Average of age in each city")
 	fmt.Println(AverageAgePerCity(users))
 }
